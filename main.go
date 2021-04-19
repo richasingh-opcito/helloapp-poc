@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"log"
-	"github.com/gorilla/mux"
 )
 
 type Message struct {
