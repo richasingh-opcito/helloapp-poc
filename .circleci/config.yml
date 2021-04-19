@@ -10,8 +10,6 @@ jobs:
       - run: 
           name: build the binary
           command: go build -o hello-app
-      - setup_remote_docker: 
-          docker_layer_caching: true
       - run:
           name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
           command:  echo 'export TAG=$(cat VERSION)-$CIRCLE_BUILD_NUM' >> $BASH_ENV
