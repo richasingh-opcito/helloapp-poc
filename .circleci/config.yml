@@ -6,21 +6,15 @@ jobs:
     docker:
       - image: circleci/golang:1.15.8
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
+      - checkout 
+      - run: 
+          name: build the binary
+          command: go build -o hello-app
+      - setup_remote_docker: 
+          docker_layer_caching: true
       - run:
-          name: Install Dependencies
-          command: go mod download
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
-      - run:
-          name: Run tests
-          command: |
-            mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests.xml
-      - store_test_results:
-          path: /tmp/test-reports
+          name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
+          command:  echo 'export TAG=$(cat VERSION)-$CIRCLE_BUILD_NUM' >> $BASH_ENV
+      - run: 
+          name: Build the docker image
+          command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:$TAG
