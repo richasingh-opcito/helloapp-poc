@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloapp
+  template:
+    metadata:
+      labels:
+        app: helloapp
+        env: dev
+        cluster: minikube
+    spec:
+      containers:
+      - name: helloapp
+        image: richa-registry/hello-app
+        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /hello
+            port: 8080
